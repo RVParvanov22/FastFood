@@ -1,0 +1,10 @@
+@model IEnumerable<FastFoodMVC.Models.FoodItem>
+@{ ViewData["Title"] = "Menu"; }
+<h1>Menu</h1>
+<form method="get" class="row g-2 mb-3">
+<div class="col"><input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search" /></div>
+<div class="col"><select name="categoryId" class="form-select"><option value="">All categories</option>@foreach (var c in (IEnumerable<FastFoodMVC.Models.FoodCategory>)ViewBag.Categories) { <option value="@c.Id" selected="@(ViewBag.CategoryId == c.Id)">@c.Name</option> }</select></div>
+<div class="col"><select name="sort" class="form-select"><option value="name">Name</option><option value="name_desc">Name descending</option><option value="price">Price</option><option value="price_desc">Price descending</option><option value="date">Newest</option></select></div>
+<div class="col-auto"><button class="btn btn-primary">Search</button></div></form>
+<div class="row">@foreach (var f in Model) { <div class="col-md-4 mb-3"><div class="card"><div class="card-body"><h5>@f.Name</h5><p>@f.Description</p><strong>@f.Price.ToString("C")</strong></div></div></div> }</div>
+<nav class="d-flex gap-2"><a asp-route-page="@((int)ViewBag.Page - 1)" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-sort="@ViewBag.Sort">Previous</a><span>Page @ViewBag.Page of @ViewBag.TotalPages</span><a asp-route-page="@((int)ViewBag.Page + 1)" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-sort="@ViewBag.Sort">Next</a></nav>

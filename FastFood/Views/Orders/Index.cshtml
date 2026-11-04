@@ -1,0 +1,13 @@
+@model IEnumerable<FastFoodMVC.Models.Order>
+<h1>@((bool)(ViewBag.IsAdmin ?? false) ? "Всички поръчки" : "Моите поръчки")</h1>
+@if (!(bool)(ViewBag.IsAdmin ?? false)) { <p><a asp-action="Create" class="btn btn-primary">Нова поръчка</a></p> }
+@if (!Model.Any())
+{
+    <div class="alert alert-light border">Все още няма поръчки.</div>
+}
+else
+{
+<div class="table-responsive"><table class="table"><thead><tr><th>№</th><th>Клиент</th><th>Дата</th><th>Статус</th><th>Артикули</th><th>Общо</th>@if ((bool)(ViewBag.IsAdmin ?? false)) { <th>Действие</th> }</tr></thead><tbody>
+@foreach (var order in Model) { <tr><td>#@order.Id</td><td>@(order.User?.Email ?? "—")</td><td>@order.CreatedAt.ToLocalTime().ToString("g")</td><td><span class="badge text-bg-warning">@order.Status</span></td><td>@string.Join(", ", order.Items.Select(i => $"{i.FoodItem?.Name} × {i.Quantity}"))</td><td>@order.Items.Sum(i => i.UnitPrice * i.Quantity).ToString("C")</td>@if ((bool)(ViewBag.IsAdmin ?? false)) { <td><form asp-action="UpdateStatus" method="post" class="d-flex gap-2">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@order.Id"/><select name="status" class="form-select form-select-sm"><option value="Pending" selected="@(order.Status == "Pending")">Чакаща</option><option value="Accepted" selected="@(order.Status == "Accepted")">Приета</option><option value="Preparing" selected="@(order.Status == "Preparing")">Приготвя се</option><option value="Ready" selected="@(order.Status == "Ready")">Готова</option><option value="Completed" selected="@(order.Status == "Completed")">Завършена</option><option value="Rejected" selected="@(order.Status == "Rejected")">Отказана</option></select><button class="btn btn-primary btn-sm" type="submit">Запази</button></form></td> }</tr> }
+ </tbody></table></div>
+}

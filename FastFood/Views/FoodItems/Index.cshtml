@@ -1,0 +1,47 @@
+@model IEnumerable<FastFoodMVC.Models.FoodItem>
+@{
+    ViewData["Title"] = "Food Items";
+}
+<h1>Fast Food Menu</h1>
+<form method="get" class="row g-2 mb-3">
+    <div class="col"><input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search name or description" /></div>
+    <div class="col"><input name="categoryId" value="@ViewBag.CategoryId" type="number" class="form-control" placeholder="Category ID" /></div>
+    <div class="col"><select name="status" class="form-select"><option value="">All status</option><option value="available" selected="@(ViewBag.Status == "available")">Available</option><option value="unavailable" selected="@(ViewBag.Status == "unavailable")">Unavailable</option></select></div>
+    <div class="col"><select name="sort" class="form-select"><option value="name">Name</option><option value="name_desc">Name descending</option><option value="price">Price</option><option value="price_desc">Price descending</option></select></div>
+    <div class="col-auto"><button class="btn btn-secondary">Apply</button></div>
+</form>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>FoodTypeId</th>
+        <th>IsAvailable</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>@item.Name</td>
+        <td>@item.Description</td>
+        <th>@item.Price</th>
+        <th>@item.FoodTypeId</th>
+        <th>@item.IsAvailable</th>
+        <td>
+            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+            <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+<nav class="d-flex gap-2"><a class="btn btn-outline-secondary @( (int)ViewBag.Page <= 1 ? "disabled" : "")" asp-route-page="@((int)ViewBag.Page - 1)" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-status="@ViewBag.Status" asp-route-sort="@ViewBag.Sort">Previous</a><span class="align-self-center">Page @ViewBag.Page of @ViewBag.TotalPages</span><a class="btn btn-outline-secondary @( (int)ViewBag.Page >= (int)ViewBag.TotalPages ? "disabled" : "")" asp-route-page="@((int)ViewBag.Page + 1)" asp-route-search="@ViewBag.Search" asp-route-categoryId="@ViewBag.CategoryId" asp-route-status="@ViewBag.Status" asp-route-sort="@ViewBag.Sort">Next</a></nav>

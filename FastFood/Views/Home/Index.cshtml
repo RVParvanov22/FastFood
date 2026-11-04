@@ -1,0 +1,17 @@
+@{ ViewData["Title"] = "Начало"; }
+<section class="hero-panel">
+    <div class="hero-copy">
+        <span class="eyebrow">БЪРЗО • ПРЯСНО • ВКУСНО</span>
+        <h1>Любимата храна<br />е на <em>една поръчка.</em></h1>
+        <p>Разгледай менюто ни, избери нещо вкусно и поръчай лесно онлайн.</p>
+        <a asp-controller="Menu" asp-action="Index" class="btn btn-primary btn-lg">Разгледай менюто <span aria-hidden="true">→</span></a>
+        @if (User.IsInRole("Client")) { <a asp-controller="Orders" asp-action="Index" class="hero-secondary">Проследи поръчките си</a> }
+        @if (User.IsInRole("Admin")) { <a asp-controller="Orders" asp-action="Index" class="hero-secondary">Прегледай поръчките</a> }
+    </div>
+    <div class="hero-art" aria-hidden="true"><div class="hero-circle"><span>🍔</span></div><div class="hero-tag">Свежо и вкусно <b>♥</b></div><div class="hero-spark">✦</div></div>
+</section>
+<section class="home-features">
+    <article><span>01</span><h3>Избери</h3><p>Разгледай наличните предложения в менюто.</p></article>
+    <article><span>02</span><h3>Поръчай</h3><p>Избери любимото си ястие и количество.</p></article>
+    <article><span>03</span><h3>Наслади се</h3><p>Виж историята на поръчките в профила си.</p></article>
+</section>

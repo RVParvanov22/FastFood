@@ -1,0 +1,6 @@
+@model IEnumerable<FastFoodMVC.Models.FoodItem>
+<h1>New order</h1>
+<form asp-action="Create" method="post"><div asp-validation-summary="All" class="text-danger"></div>
+<label for="foodItemId">Food item</label><select name="foodItemId" id="foodItemId" class="form-select">@foreach (var item in Model) { <option value="@item.Id">@item.Name — @item.Price.ToString("C")</option> }</select>
+<label for="quantity">Quantity</label><input type="number" name="quantity" id="quantity" min="1" max="99" value="1" class="form-control" />
+<button class="btn btn-primary mt-3" type="submit">Place order</button></form>

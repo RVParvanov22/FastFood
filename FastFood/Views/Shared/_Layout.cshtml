@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] · FastFood</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FastFood.styles.css" asp-append-version="true" />
+</head>
+<body>
+<header class="site-header">
+    <nav class="navbar navbar-expand-lg container">
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index"><span class="brand-mark">F</span> FastFood</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Отвори меню"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Начало</a></li>
+                <li class="nav-item"><a class="nav-link" asp-controller="Menu" asp-action="Index">Меню</a></li>
+                @if (User.IsInRole("Admin")) { <li class="nav-item"><a class="nav-link" asp-controller="FoodItems" asp-action="Index">Управление</a></li><li class="nav-item"><a class="nav-link" asp-controller="Orders" asp-action="Index">Поръчки</a></li> }
+                @if (User.IsInRole("Client")) { <li class="nav-item"><a class="nav-link" asp-controller="Orders" asp-action="Index">Моите поръчки</a></li> }
+            </ul>
+            <div class="nav-auth">
+                @if (User.Identity?.IsAuthenticated == true) {
+                    <span class="user-label">@User.Identity.Name</span>
+                    <form asp-controller="Account" asp-action="Logout" method="post">@Html.AntiForgeryToken()<button type="submit" class="btn btn-outline-dark btn-sm">Изход</button></form>
+                } else {
+                    <a class="nav-link" asp-controller="Account" asp-action="Login">Вход</a>
+                    <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Регистрация</a>
+                }
+            </div>
+        </div>
+    </nav>
+</header>
+<main class="container page-content">@RenderBody()</main>
+<footer class="site-footer"><div class="container">© @DateTime.Now.Year FastFood <span>Приготвено с вкус.</span></div></footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
