@@ -12,8 +12,9 @@ public class FoodItemsApiController(ApplicationDbContext context) : ControllerBa
     [HttpGet]
     public async Task<ActionResult<IEnumerable<FoodItem>>> Get()
     {
-        return Ok(context.FoodItems.AsNoTracking().ToListAsync());
-    } 
+        return Ok( await context.FoodItems.AsNoTracking().ToListAsync());
+    } //shte vurne task !!!
+    
     [HttpGet("{id:int}")]
     public async Task<ActionResult<FoodItem>> 
         Get(int id) => await context.FoodItems.FindAsync(id) is { } item ? item : NotFound();

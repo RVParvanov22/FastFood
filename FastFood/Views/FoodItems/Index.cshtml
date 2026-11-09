@@ -3,6 +3,10 @@
     ViewData["Title"] = "Food Items";
 }
 <h1>Fast Food Menu</h1>
+@if (TempData["Message"] is string message)
+{
+    <div class="alert alert-info" role="alert">@message</div>
+}
 <form method="get" class="row g-2 mb-3">
     <div class="col"><input name="search" value="@ViewBag.Search" class="form-control" placeholder="Search name or description" /></div>
     <div class="col"><input name="categoryId" value="@ViewBag.CategoryId" type="number" class="form-control" placeholder="Category ID" /></div>

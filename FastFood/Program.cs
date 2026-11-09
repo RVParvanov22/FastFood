@@ -20,7 +20,6 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var dbContext = services.GetRequiredService<ApplicationDbContext>();
 
-    // Ensure the admin has valid choices for FoodItem.FoodTypeId on a fresh or empty database.
     string[] defaultCategories = { "Burgers", "Pizza", "Sides", "Drinks", "Desserts" };
     foreach (var categoryName in defaultCategories)
     {
@@ -87,6 +86,5 @@ app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

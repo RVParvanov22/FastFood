@@ -27,5 +27,7 @@ namespace FastFoodMVC.Models
 
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         
+        public string? ImagePath { get; set; }
+        
     }
 }

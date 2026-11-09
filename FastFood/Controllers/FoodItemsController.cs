@@ -61,21 +61,67 @@ namespace FastFood.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FoodItem foodItem)
+        public async Task<IActionResult> Create(FoodItem foodItem, IFormFile? imageFile)
         {
             if (!await _context.FoodCategories.AnyAsync(c => c.Id == foodItem.FoodTypeId))
                 ModelState.AddModelError(nameof(foodItem.FoodTypeId), "Изберете валидна категория.");
 
+            if (imageFile != null)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+                
+                var extrnsion = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extrnsion))
+                {
+                    ModelState.AddModelError("imageFile", "Позволени са само JPG, JPEG, PNG и WEBP файлове.");
+                }
+
+                if (imageFile.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError("imageFile", "Размерът на снимката не трябва да надвишава 5 MB.");
+                }
+
+                if (imageFile.Length == 0)
+                {
+                    ModelState.AddModelError("imageFile", "Файлът е празен.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(
+                        Directory.GetCurrentDirectory(),
+                        "wwwroot",
+                        "uploads",
+                        "fooditems");
+
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(fileStream);
+                    }
+
+                    foodItem.ImagePath = "/uploads/fooditems/" + uniqueFileName;
+                }
+
                 _context.Add(foodItem);
-                await _context.SaveChangesAsync();
-                
-                return RedirectToAction(nameof(Index));
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                await LoadCategoriesAsync(foodItem.FoodTypeId);
+                return View(foodItem);
             }
-            await LoadCategoriesAsync(foodItem.FoodTypeId);
-            return View(foodItem);
-        }
+        
 
         public async Task<IActionResult> Edit(int? id)
         {
@@ -142,8 +188,18 @@ namespace FastFood.Controllers
 
             if (foodItem != null)
             {
+                var hasOrders = await _context.OrderItems.AnyAsync(item => item.FoodItemId == id);
+                if (hasOrders)
+                {
+                    foodItem.IsAvailable = false;
+                    await _context.SaveChangesAsync();
+                    TempData["Message"] = "Продуктът е използван в поръчки и не може да бъде изтрит. Премахнат е от менюто, а историята на поръчките е запазена.";
+                    return RedirectToAction(nameof(Index));
+                }
+
                 _context.FoodItems.Remove(foodItem);
                 await _context.SaveChangesAsync();
+                TempData["Message"] = "Продуктът е изтрит.";
             }
             return RedirectToAction(nameof(Index));
         }

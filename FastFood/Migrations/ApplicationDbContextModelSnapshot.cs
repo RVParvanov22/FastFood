@@ -120,6 +120,9 @@ namespace FastFood.Migrations
                     b.Property<int>("FoodTypeId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("boolean");
 

@@ -244,3 +244,4 @@
 /Users/rumenp/RiderProjects/claas/FastFood/FastFood/bin/Debug/net10.0/runtimes/win/lib/net9.0/System.Windows.Extensions.dll
 /Users/rumenp/RiderProjects/claas/FastFood/FastFood/bin/Debug/net10.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 /Users/rumenp/RiderProjects/claas/FastFood/FastFood/obj/Debug/net10.0/compressed/ldpzc7vd7w-{0}-wfzlkdxyxw-wfzlkdxyxw.gz
+/Users/rumenp/RiderProjects/claas/FastFood/FastFood/obj/Debug/net10.0/FastFood.sourcelink.json
