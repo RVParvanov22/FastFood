@@ -1,5 +1,6 @@
 using FastFood.Data;
 using FastFoodMVC.Models;
+using FastFood.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
@@ -12,9 +13,11 @@ namespace FastFood.Controllers
     {
         private readonly ApplicationDbContext _context;
         
-        public FoodItemsController(ApplicationDbContext context)
+        private readonly FileStorageService _fileStorage;
+        public FoodItemsController(ApplicationDbContext context, FileStorageService fileStorage)
         {
             _context = context;
+            _fileStorage = fileStorage;
         }
         
         public async Task<IActionResult> Index(string? search, int? categoryId, string? status, string? sort = "name", int page = 1)
@@ -66,27 +69,51 @@ namespace FastFood.Controllers
             if (!await _context.FoodCategories.AnyAsync(c => c.Id == foodItem.FoodTypeId))
                 ModelState.AddModelError(nameof(foodItem.FoodTypeId), "Изберете валидна категория.");
 
-            if (imageFile != null)
+            if (imageFile is not null)
             {
+                var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
-                
-                var extrnsion = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
 
-                if (!allowedExtensions.Contains(extrnsion))
-                {
-                    ModelState.AddModelError("imageFile", "Позволени са само JPG, JPEG, PNG и WEBP файлове.");
-                }
-
-                if (imageFile.Length > 5 * 1024 * 1024)
-                {
-                    ModelState.AddModelError("imageFile", "Размерът на снимката не трябва да надвишава 5 MB.");
-                }
+                if (!allowedExtensions.Contains(extension))
+                    ModelState.AddModelError("imageFile", "Позволени са JPG, PNG и WEBP файлове.");
 
                 if (imageFile.Length == 0)
-                {
                     ModelState.AddModelError("imageFile", "Файлът е празен.");
+
+                if (imageFile.Length > 5 * 1024 * 1024)
+                    ModelState.AddModelError("imageFile", "Максималният размер е 5 MB.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                string? savedImagePath = null;
+
+                try
+                {
+                    if (imageFile is not null && imageFile.Length > 0)
+                    {
+                        savedImagePath = await _fileStorage.SaveFoodImageAsync(imageFile);
+                        foodItem.ImagePath = savedImagePath;
+                    }
+
+                    _context.Add(foodItem);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (InvalidDataException ex)
+                {
+                    ModelState.AddModelError("imageFile", ex.Message);
+                }
+                catch
+                {
+                    await _fileStorage.DeleteFoodImageAsync(savedImagePath);
+                    throw;
                 }
             }
+
+            await LoadCategoriesAsync(foodItem.FoodTypeId);
+            return View(foodItem);
 
             if (ModelState.IsValid)
             {

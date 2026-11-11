@@ -10,54 +10,66 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name"></label>
-                <input asp-for="Name" class="form-control"/>
+    <div class="col-md-6">
+        <form asp-action="Create"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="Description"></label>
+
+            <div class="form-group mb-3">
+                <label asp-for="Description" class="form-label"></label>
                 <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="Price"></label>
-                <input asp-for="Price" class="form-control"/>
+
+            <div class="form-group mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label for="imageFile">Food Image</label>
+
+            <div class="form-group mb-3">
+                <label for="imageFile" class="form-label">Food Image</label>
                 <input type="file"
                        name="imageFile"
                        id="imageFile"
                        class="form-control"
-                       accept=".jpg, .jpeg, .png, .webp" />
+                       accept=".jpg,.jpeg,.png,.webp" />
+                <small class="form-text text-muted">
+                    Разрешени формати: JPG, PNG и WEBP. Максимален размер: 5 MB.
+                </small>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="FoodTypeId">Category</label>
-                <select asp-for="FoodTypeId" asp-items="ViewBag.FoodTypeId" class="form-select"><option value="">Choose a category</option></select>
+
+            <div class="form-group mb-3">
+                <label asp-for="FoodTypeId" class="form-label">Category</label>
+                <select asp-for="FoodTypeId"
+                        asp-items="ViewBag.FoodTypeId"
+                        class="form-select">
+                    <option value="">Choose a category</option>
+                </select>
                 <span asp-validation-for="FoodTypeId" class="text-danger"></span>
             </div>
-            
-            <div class="form-group">
-                <label asp-for="IsAvailable"></label>
-                <input asp-for="IsAvailable" type="checkbox"/>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsAvailable" class="form-check-input" />
+                <label asp-for="IsAvailable" class="form-check-label"></label>
             </div>
-            <br />
-            
+
             <button type="submit" class="btn btn-primary">Create</button>
             <a asp-action="Index" class="btn btn-secondary">Back to List</a>
         </form>
     </div>
 </div>
 
-@section Scripts{
-    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

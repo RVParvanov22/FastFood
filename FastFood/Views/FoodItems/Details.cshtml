@@ -8,6 +8,11 @@
 
 <hr />
 
+@if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+{
+    <img src="@Model.ImagePath" alt="@Model.Name" class="img-fluid rounded mb-3" style="max-width: 400px; max-height: 300px; object-fit: cover;" />
+}
+
 <div>
     <dl class="row">
         <dt class="col-sm-2">

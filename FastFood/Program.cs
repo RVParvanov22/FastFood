@@ -1,5 +1,6 @@
 using FastFood.Data;
 using FastFoodMVC.Models;
+using FastFood.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,6 +12,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<FileStorageService>();
 
 var app = builder.Build();
 

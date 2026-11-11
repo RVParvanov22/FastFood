@@ -22,6 +22,7 @@
 <table class="table">
     <thead>
     <tr>
+        <th>Image</th>
         <th>Name</th>
         <th>Description</th>
         <th>Price</th>
@@ -34,6 +35,12 @@
     @foreach (var item in Model)
     {
     <tr>
+        <td>
+            @if (!string.IsNullOrWhiteSpace(item.ImagePath))
+            {
+                <img src="@item.ImagePath" alt="@item.Name" style="width: 72px; height: 72px; object-fit: cover;" />
+            }
+        </td>
         <td>@item.Name</td>
         <td>@item.Description</td>
         <th>@item.Price</th>
